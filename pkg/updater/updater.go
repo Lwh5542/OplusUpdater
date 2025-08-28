@@ -3,6 +3,7 @@ package updater
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt" // ← 增加打印
 	"github.com/deatil/go-cryptobin/cryptobin/crypto"
 	"github.com/go-resty/resty/v2"
 	"net/url"
@@ -110,6 +111,20 @@ func QueryUpdate(args *QueryUpdateArgs) (*ResponseResult, error) {
 	} else {
 		return nil, err
 	}
+
+	// ====== 👇👇👇 调试打印开始 👇👇👇 ======
+	fmt.Println("======== [DEBUG] REQUEST URL ========")
+	fmt.Println(requestUrl.String())
+
+	fmt.Println("\n======== [DEBUG] REQUEST HEADERS ========")
+	for k, v := range requestHeaders {
+		fmt.Printf("%s: %s\n", k, v)
+	}
+
+	fmt.Println("\n======== [DEBUG] REQUEST BODY ========")
+	prettyBody, _ := json.MarshalIndent(map[string]string{"params": requestBody}, "", "  ")
+	fmt.Println(string(prettyBody))
+	// ====== 👆👆👆 调试打印结束 👆👆👆 ======
 
 	client := resty.New()
 	if p := strings.TrimSpace(args.Proxy); len(p) > 0 {
